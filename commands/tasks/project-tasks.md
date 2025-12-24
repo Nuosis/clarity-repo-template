@@ -70,7 +70,13 @@ Create or update `.clarify/tasks.json` with task objects containing:
     "Do Not Roll-Your-Own. Leverage existing services, APIs, functions, libraries. If excellent libraries exist but are not implemented, use the library over custom code.",
     "Post task execution: verify no hallucinated endpoints, function names, props, API fields, or value structures.",
     "Tasks must update this JSON on completion.",
-    "No unit testing, integration testing, or E2E testing during development. Ensure code imports and compiles."
+    "No unit testing, integration testing, or E2E testing during development. Ensure code imports and compiles.",
+    "No silent failures. Errors must be logged or surfaced to users. Never swallow exceptions or return misleading fallbacks.",
+    "No incomplete work markers. Tasks cannot be marked complete with unresolved TODO, FIXME, HACK, or XXX comments.",
+    "No security vulnerabilities. Avoid OWASP Top 10: SQL injection, XSS, command injection, auth bypasses. Validate input at system boundaries.",
+    "Verification run required. Execute actual code path with realistic data and show output.",
+    "Type safety. Code must compile with strict TypeScript. Prefer typed APIs over any.",
+    "Golden path verification. Verify feature works end-to-end before marking complete."
   ],
   "tasks": [
     {
@@ -90,7 +96,24 @@ Create or update `.clarify/tasks.json` with task objects containing:
         "dependencies": ["ServiceName", "OtherTask"],
         "role_in_system": "Brief description of what this component does"
       },
-      "implementation_notes": ""
+      "implementation_notes": "",
+      "verification": {
+        "status": "pending|passed|failed",
+        "compiled": { "passed": false, "notes": "" },
+        "constraints_check": {
+          "passed": false,
+          "no_overengineering": { "passed": false, "notes": "" },
+          "dry": { "passed": false, "notes": "" },
+          "no_roll_your_own": { "passed": false, "notes": "" },
+          "no_hallucinations": { "passed": false, "notes": "" },
+          "no_silent_failures": { "passed": false, "notes": "" },
+          "no_todo_comments": { "passed": false, "notes": "" },
+          "no_security_vulnerabilities": { "passed": false, "notes": "" }
+        },
+        "verification_run": { "passed": false, "input": "", "output": "", "notes": "" },
+        "golden_path": { "passed": false, "scenario": "", "result": "", "notes": "" },
+        "boundary_check": { "passed": false, "edge_cases_tested": [], "notes": "" }
+      }
     }
   ]
 }
@@ -109,6 +132,18 @@ Create or update `.clarify/tasks.json` with task objects containing:
 5. **Update Task Status**: Tasks are required to update the JSON on completion.
 
 6. **No Testing During Development**: No unit testing, integration testing, or E2E testing during development. Ensure code imports and compiles.
+
+7. **No Silent Failures**: Errors must be logged or surfaced to users. Never swallow exceptions with empty catch blocks, return misleading fallback values that hide failures, or show success messages when operations fail.
+
+8. **No Incomplete Work Markers**: Tasks cannot be marked complete with unresolved TODO, FIXME, HACK, or XXX comments in the implemented code.
+
+9. **No Security Vulnerabilities**: Avoid OWASP Top 10 vulnerabilities including SQL injection, XSS, command injection, and authentication bypasses. Validate input at system boundaries.
+
+10. **Verification Run Required**: After implementing functionality, execute the actual code path (not a test) with realistic data. Show the output. This catches integration issues that mocked tests miss.
+
+11. **Type Safety**: Code must compile with strict TypeScript (or equivalent). Prefer typed APIs over `any`. Static analysis catches bugs without mocking overhead.
+
+12. **Golden Path Verification**: Before marking complete, verify the feature works end-to-end in the running application. Demonstrate input → output for the primary user flow.
 
 ## Output Location
 
